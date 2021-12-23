@@ -13,6 +13,7 @@ import { pathJoin } from "../tools/pathJoin";
 import { useConstCallback } from "powerhooks/useConstCallback";
 import type { KcTemplateProps } from "./KcProps";
 import { useCssAndCx } from "tss-react";
+import { KcProps } from "..";
 
 export type TemplateProps = {
     displayInfo?: boolean;
@@ -28,7 +29,7 @@ export type TemplateProps = {
      * to avoid pulling the default theme assets.
      */
     doFetchDefaultThemeResources: boolean;
-} & { kcContext: KcContextBase } & KcTemplateProps;
+} & { kcContext: KcContextBase } & KcTemplateProps & KcProps;
 
 export const Template = memo((props: TemplateProps) => {
     const {
@@ -43,6 +44,7 @@ export const Template = memo((props: TemplateProps) => {
         infoNode = null,
         kcContext,
         doFetchDefaultThemeResources,
+        CardComponent,
     } = props;
 
     const { cx } = useCssAndCx();
@@ -145,7 +147,7 @@ export const Template = memo((props: TemplateProps) => {
                 </div>
             </div>
 
-            <div className={cx(props.kcFormCardClass, displayWide && props.kcFormCardAccountClass)}>
+            <CardComponent displayWide={displayWide} kcProps={props}>
                 <header className={cx(props.kcFormHeaderClass)}>
                     {realm.internationalizationEnabled && (assert(locale !== undefined), true) && locale.supported.length > 1 && (
                         <div id="kc-locale">
@@ -266,7 +268,7 @@ export const Template = memo((props: TemplateProps) => {
                         )}
                     </div>
                 </div>
-            </div>
+            </CardComponent>
         </div>
     );
 });

@@ -1,14 +1,14 @@
-import { useState, memo } from "react";
-import { Template } from "./Template";
-import type { KcProps } from "./KcProps";
+import { useConstCallback } from "powerhooks/useConstCallback";
+import { memo, useState } from "react";
+import { useCssAndCx } from "tss-react";
 import type { KcContextBase } from "../getKcContext/KcContextBase";
 import { useKcMessage } from "../i18n/useKcMessage";
-import { useCssAndCx } from "tss-react";
-import { useConstCallback } from "powerhooks/useConstCallback";
+import type { KcProps } from "./KcProps";
+import { Template } from "./Template";
 
 export const Login = memo(({ kcContext, ...props }: { kcContext: KcContextBase.Login } & KcProps) => {
     const { social, realm, url, usernameEditDisabled, login, auth, registrationDisabled } = kcContext;
-
+    const { InputFieldComponent, CheckboxFieldComponent, ButtonComponent } = props;
     const { msg, msgStr } = useKcMessage();
 
     const { cx } = useCssAndCx();
@@ -33,59 +33,46 @@ export const Login = memo(({ kcContext, ...props }: { kcContext: KcContextBase.L
                         {realm.password && (
                             <form id="kc-form-login" onSubmit={onSubmit} action={url.loginAction} method="post">
                                 <div className={cx(props.kcFormGroupClass)}>
-                                    <label htmlFor="username" className={cx(props.kcLabelClass)}>
-                                        {!realm.loginWithEmailAllowed
+                                    <InputFieldComponent
+                                        tabIndex={1}
+                                        kcProps={props}
+                                        disabled={usernameEditDisabled}
+                                        autoFocus
+                                        autoComplete={!usernameEditDisabled ? "off" : undefined}
+                                        name="username"
+                                        type="text"
+                                        defaultValue={login.username}
+                                        label={!realm.loginWithEmailAllowed
                                             ? msg("username")
                                             : !realm.registrationEmailAsUsername
-                                            ? msg("usernameOrEmail")
-                                            : msg("email")}
-                                    </label>
-                                    <input
-                                        tabIndex={1}
-                                        id="username"
-                                        className={cx(props.kcInputClass)}
-                                        name="username"
-                                        defaultValue={login.username ?? ""}
-                                        type="text"
-                                        {...(usernameEditDisabled
-                                            ? { "disabled": true }
-                                            : {
-                                                  "autoFocus": true,
-                                                  "autoComplete": "off",
-                                              })}
+                                                ? msg("usernameOrEmail")
+                                                : msg("email")}
                                     />
                                 </div>
                                 <div className={cx(props.kcFormGroupClass)}>
-                                    <label htmlFor="password" className={cx(props.kcLabelClass)}>
-                                        {msg("password")}
-                                    </label>
-                                    <input
+                                    <InputFieldComponent
                                         tabIndex={2}
-                                        id="password"
-                                        className={cx(props.kcInputClass)}
-                                        name="password"
+                                        kcProps={props}
+                                        disabled={usernameEditDisabled}
+                                        autoFocus={!usernameEditDisabled}
+                                        autoComplete={"off"}
                                         type="password"
-                                        autoComplete="off"
+                                        name="password"
+                                        defaultValue={login.username}
+                                        label={msg("password")}
                                     />
                                 </div>
                                 <div className={cx(props.kcFormGroupClass, props.kcFormSettingClass)}>
                                     <div id="kc-form-options">
                                         {realm.rememberMe && !usernameEditDisabled && (
                                             <div className="checkbox">
-                                                <label>
-                                                    <input
-                                                        tabIndex={3}
-                                                        id="rememberMe"
-                                                        name="rememberMe"
-                                                        type="checkbox"
-                                                        {...(login.rememberMe
-                                                            ? {
-                                                                  "checked": true,
-                                                              }
-                                                            : {})}
-                                                    />
-                                                    {msg("rememberMe")}
-                                                </label>
+                                                <CheckboxFieldComponent
+                                                    id="rememberMe"
+                                                    name="rememberMe"
+                                                    tabIndex={3}
+                                                    checked={login.rememberMe}
+                                                    content={msg("rememberMe")}
+                                                />
                                             </div>
                                         )}
                                     </div>
@@ -106,21 +93,15 @@ export const Login = memo(({ kcContext, ...props }: { kcContext: KcContextBase.L
                                         name="credentialId"
                                         {...(auth?.selectedCredential !== undefined
                                             ? {
-                                                  "value": auth.selectedCredential,
-                                              }
+                                                "value": auth.selectedCredential,
+                                            }
                                             : {})}
                                     />
-                                    <input
+                                    <ButtonComponent
+                                        kcProps={props}
                                         tabIndex={4}
-                                        className={cx(
-                                            props.kcButtonClass,
-                                            props.kcButtonPrimaryClass,
-                                            props.kcButtonBlockClass,
-                                            props.kcButtonLargeClass,
-                                        )}
                                         name="login"
                                         id="kc-login"
-                                        type="submit"
                                         value={msgStr("doLogIn")}
                                         disabled={isLoginButtonDisabled}
                                     />

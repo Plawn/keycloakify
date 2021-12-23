@@ -10,14 +10,14 @@
     "types": "dist/lib/index.d.ts",
     "scripts": {
         "clean": "rimraf dist/",
-        "build": "yarn clean && tsc && yarn grant-exec-perms && yarn copy-files",
+        "build": "npm run clean && tsc && npm run grant-exec-perms && npm run copy-files",
         "grant-exec-perms": "node dist/bin/tools/grant-exec-perms.js",
         "test": "node dist/test/bin/main && node dist/test/lib",
         "copy-files": "copyfiles -u 1 src/**/*.ftl src/**/*.xml src/**/*.js dist/",
         "generate-messages": "node dist/bin/generate-i18n-messages.js",
         "link_in_test_app": "node dist/bin/link_in_test_app.js",
         "_format": "prettier '**/*.{ts,tsx,json,md}'",
-        "format": "yarn _format --write",
+        "format": "npm run _format --write",
         "format:check": "yarn _format --list-different"
     },
     "bin": {
@@ -77,10 +77,12 @@
     },
     "dependencies": {
         "cheerio": "^1.0.0-rc.5",
+        "dist": "^0.1.2",
         "evt": "2.0.0-beta.38",
         "minimal-polyfills": "^2.2.1",
         "path-browserify": "^1.0.1",
         "react-markdown": "^5.0.3",
+        "react-uid": "^2.3.1",
         "scripting-tools": "^0.19.13",
         "tsafe": "^0.8.1"
     }
